@@ -33,7 +33,7 @@ ff.get('/scoreboard', async (request, reply) => {
 	})
 })
 
-ff.listen({ port: +(process.env.PORT || 8080) }, (err, address) => {
+ff.listen({ port: +(process.env.PORT || 8080), host: process.env.PORT && '0.0.0.0' }, (err, address) => {
 	if (err) {
 		console.error(err)
 		process.exit(1)
