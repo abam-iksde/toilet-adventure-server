@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'fs'
+import md5 from 'js-md5'
 import { constructArray } from './utils'
 
 export interface Scoreboard {
@@ -58,4 +59,8 @@ export function sortScores(scoreboard: Scoreboard): Scoreboard {
 			return a.score - b.score
 		}),
 	}
+}
+
+export function verifyAdminKey(key: string, scoreboard?: Scoreboard) {
+	return scoreboard && (key === md5(`abam to szef :)${JSON.stringify(scoreboard)}`))
 }

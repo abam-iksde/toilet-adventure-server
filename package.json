@@ -2,7 +2,8 @@
   "name": "server_twojej_starej",
   "packageManager": "yarn@3.3.1",
   "scripts": {
-    "start": "ts-node src/main.ts"
+    "start": "ts-node src/main.ts",
+    "deploy:scoreboard": "ts-node scripts/deployScoreboard.ts"
   },
   "dependencies": {
     "fastify": "^4.11.0",

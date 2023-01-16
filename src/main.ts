@@ -1,6 +1,6 @@
 import fastify from 'fastify'
 import { asDemoQuery } from './isDemoQuery'
-import { excludeDemos, initScoreboard } from './Scoreboard'
+import { excludeDemos, initScoreboard, verifyAdminKey } from './Scoreboard'
 import { toScore, submitScore, verifyKey } from './submitScore'
 
 const ff = fastify({ logger: true })
@@ -29,9 +29,23 @@ ff.post('/submit', async (request, reply) => {
 })
 
 ff.get('/scoreboard', async (request, reply) => {
+	const includeDemos = (query: any) => 'includeDemos' in query
+	if (includeDemos(request.query)) {
+		return reply.code(200).send({
+			scoreboard,
+		})
+	}
 	return reply.code(200).send({
 		scoreboard: excludeDemos(scoreboard),
 	})
+})
+
+ff.post('/scoreboard', async (request, reply) => {
+	const getScoreboard = (body: any) => body.scoreboard
+	const newScoreboard = getScoreboard(request.body)
+	if (!request.headers.key || typeof request.headers.key !== 'string' || !verifyAdminKey(request.headers.key, newScoreboard)) return reply.code(401).send()
+	scoreboard = newScoreboard
+	return reply.code(200).send()
 })
 
 ff.get('/demo', async (request, reply) => {
