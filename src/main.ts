@@ -1,4 +1,5 @@
 import fastify from 'fastify'
+import { asDemoQuery } from './isDemoQuery'
 import { initScoreboard } from './Scoreboard'
 import { toScore, submitScore, verifyKey } from './submitScore'
 
@@ -6,8 +7,8 @@ const ff = fastify({ logger: true })
 
 let scoreboard = initScoreboard()
 
-ff.get('/submit', async (request, reply) => {
-	const score = toScore(request.query)
+ff.post('/submit', async (request, reply) => {
+	const score = toScore(request.body)
 	if (!score) {
 		return reply.code(400).send()
 	}
@@ -33,7 +34,21 @@ ff.get('/scoreboard', async (request, reply) => {
 	})
 })
 
-ff.listen({ port: +(process.env.PORT || 8080), host: process.env.PORT && '0.0.0.0' }, (err, address) => {
+ff.get('/demo', async (request, reply) => {
+	const demoQuery = asDemoQuery(request.query)
+	if (!demoQuery) return reply.code(400).send()
+	const { demo } = scoreboard.times[demoQuery.position]
+	if (!demo) {
+		return {
+			noDemo: true,
+		}
+	}
+	return {
+		demo,
+	}
+})
+
+ff.listen({ port: +(process.env.PORT || 8080), host: '0.0.0.0' }, (err, address) => {
 	if (err) {
 		console.error(err)
 		process.exit(1)

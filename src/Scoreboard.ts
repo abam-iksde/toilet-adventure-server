@@ -7,8 +7,9 @@ export interface Scoreboard {
 		score: number
 	}[],
 	times: {
-		name: string,
-		score: number,
+		name: string
+		score: number
+		demo?: string
 	}[],
 }
 

@@ -6,6 +6,7 @@ interface Score {
 	name: string
 	score: number
 	time: number
+	demo?: string
 }
 
 export function toScore(potentialScore: any): Score | undefined {
@@ -15,6 +16,7 @@ export function toScore(potentialScore: any): Score | undefined {
 				name: potentialScore.name,
 				score: +potentialScore.score,
 				time: +potentialScore.time,
+				demo: potentialScore.demo,
 			}
 		}
 	}
@@ -29,6 +31,7 @@ export function submitScore(scoreboard: Scoreboard, score: Score): { newScoreboa
 	scoreboard.times.push({
 		name: score.name,
 		score: score.time,
+		demo: score.demo,
 	})
 	const newScoreboard = sortScores(scoreboard)
 	newScoreboard.scores.pop()
