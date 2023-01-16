@@ -1,5 +1,5 @@
 {
-  "name": "server_twojej_starej",
+  "name": "toilet-adventure-server",
   "packageManager": "yarn@3.3.1",
   "scripts": {
     "start": "ts-node src/main.ts",
