@@ -13,6 +13,13 @@ export interface Scoreboard {
 	}[],
 }
 
+export function excludeDemos(scoreboard: Scoreboard): Scoreboard {
+	return {
+		scores: scoreboard.scores,
+		times: scoreboard.times.map(v => ({ name: v.name, score: v.score }))
+	}
+}
+
 export function initScoreboard(): Scoreboard {
 	if (existsSync('scores.json')) {
 		return JSON.parse(readFileSync('scores.json').toString())

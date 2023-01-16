@@ -1,6 +1,6 @@
 import fastify from 'fastify'
 import { asDemoQuery } from './isDemoQuery'
-import { initScoreboard } from './Scoreboard'
+import { excludeDemos, initScoreboard } from './Scoreboard'
 import { toScore, submitScore, verifyKey } from './submitScore'
 
 const ff = fastify({ logger: true })
@@ -24,13 +24,13 @@ ff.post('/submit', async (request, reply) => {
 	return reply.code(200).send({
 		positionScore,
 		positionTime,
-		scoreboard,
+		scoreboard: excludeDemos(scoreboard),
 	})
 })
 
 ff.get('/scoreboard', async (request, reply) => {
 	return reply.code(200).send({
-		scoreboard
+		scoreboard: excludeDemos(scoreboard),
 	})
 })
 
