@@ -2,15 +2,25 @@
   "name": "toilet-adventure-server",
   "packageManager": "yarn@3.3.1",
   "scripts": {
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate deploy",
+    "prisma:migrate:dev": "dotenv -e .env.dev -- npx prisma migrate dev",
+    "build": "npm run prisma:generate && npm run prisma:migrate",
     "start": "ts-node src/main.ts",
+    "start:dev": "dotenv -e .env.dev -- npm run start",
+    "build:dev": "dotenv -e .env.dev -- npm run build",
     "deploy:scoreboard": "ts-node scripts/deployScoreboard.ts"
   },
   "dependencies": {
+    "@prisma/client": "^4.9.0",
+    "@types/js-md5": "^0.7.0",
+    "dotenv": "^16.0.3",
+    "dotenv-cli": "^7.0.0",
     "fastify": "^4.11.0",
     "js-md5": "^0.7.3",
+    "prisma": "^4.9.0",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.4",
-    "@types/js-md5": "^0.7.0"
+    "typescript": "^4.9.4"
   },
   "devDependencies": {
     "@types/node": "^18.11.18"

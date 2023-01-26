@@ -1,6 +1,6 @@
-import { existsSync, readFileSync } from 'fs'
 import md5 from 'js-md5'
 import { constructArray } from './utils'
+import {PrismaClient} from "@prisma/client";
 
 export interface Scoreboard {
 	scores: {
@@ -21,20 +21,50 @@ export function excludeDemos(scoreboard: Scoreboard): Scoreboard {
 	}
 }
 
-export function initScoreboard(): Scoreboard {
-	if (existsSync('scores.json')) {
-		return JSON.parse(readFileSync('scores.json').toString())
-	}
+export async function initScoreboard(): Promise<Scoreboard> {
+  const prismaClient = new PrismaClient()
+
+  const dbScores = await prismaClient.score.findMany({
+    orderBy: [{
+      score: 'desc',
+    }],
+    take: 9,
+  })
+
+  const dbTimes = await prismaClient.time.findMany({
+    orderBy: [{
+      score: 'asc',
+    }],
+    take: 9,
+  })
 
 	return {
-		scores: constructArray(9, () => ({
-			name: '------',
-			score: 0,
-		})),
-		times: constructArray(9, () => ({
-			name: '------',
-			score: 0,
-		})),
+		scores: constructArray(9, index => {
+      if (index < dbScores.length) {
+        return {
+          name: dbScores[index].name,
+          score: dbScores[index].score,
+        }
+      }
+      return {
+        name: '------',
+        score: 0,
+		  }
+    }
+    ),
+		times: constructArray(9, index => {
+      if (index < dbTimes.length) {
+        return {
+          name: dbTimes[index].name,
+          score: dbTimes[index].score,
+          demo: dbTimes[index].demo,
+        }
+      }
+      return{
+        name: '------',
+        score: 0,
+      }
+    }),
 	}
 }
 

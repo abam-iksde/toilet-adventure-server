@@ -1,11 +1,11 @@
 import fastify from 'fastify'
 import { asDemoQuery } from './isDemoQuery'
-import { excludeDemos, initScoreboard, verifyAdminKey } from './Scoreboard'
+import {excludeDemos, initScoreboard, Scoreboard, verifyAdminKey} from './Scoreboard'
 import { toScore, submitScore, verifyKey } from './submitScore'
 
 const ff = fastify({ logger: true })
 
-let scoreboard = initScoreboard()
+let scoreboard: Scoreboard
 
 ff.post('/submit', async (request, reply) => {
 	const score = toScore(request.body)
@@ -19,7 +19,7 @@ ff.post('/submit', async (request, reply) => {
 		newScoreboard,
 		positionScore,
 		positionTime,
-	} = submitScore(scoreboard, score)
+	} = await submitScore(scoreboard, score)
 	scoreboard = newScoreboard
 	return reply.code(200).send({
 		positionScore,
@@ -62,10 +62,16 @@ ff.get('/demo', async (request, reply) => {
 	}
 })
 
-ff.listen({ port: +(process.env.PORT || 8080), host: '0.0.0.0' }, (err, address) => {
-	if (err) {
-		console.error(err)
-		process.exit(1)
-	}
-	console.log(`Server listening at ${address}`)
-})
+async function main() {
+  scoreboard = await initScoreboard()
+
+  ff.listen({port: +(process.env.PORT || 8080), host: '0.0.0.0'}, (err, address) => {
+    if (err) {
+      console.error(err)
+      process.exit(1)
+    }
+    console.log(`Server listening at ${address}`)
+  })
+}
+
+main()

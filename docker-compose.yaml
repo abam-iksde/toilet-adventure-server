@@ -1,0 +1,16 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: toilet-adventure-server
+    image: postgres:13.8
+    restart: on-failure
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      DATABASE: toilet_adventure_scorebase
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./scripts/db-autostart:/docker-entrypoint-initdb.d
+    command: ["postgres", "-c", "log_statement=all"]
